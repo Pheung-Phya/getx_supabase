@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:getx_supabase/app/modules/widgets/input_field.dart';
-
+import 'package:getx_supabase/app/routes/app_pages.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
   LoginView({super.key});
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,24 +21,21 @@ class LoginView extends GetView<LoginController> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
                 width: double.infinity,
                 height: 300,
                 child: Image.asset('assets/images/logostar.png'),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               InputField(
                 hintText: 'Enter Email',
                 label: 'Email',
                 controller: emailController,
                 icon: Icons.email,
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               Obx(() {
                 return InputField(
                   hintText: 'Enter Password',
@@ -51,7 +47,19 @@ class LoginView extends GetView<LoginController> {
                       : Icons.visibility,
                   onIconPressed: controller.toggleShowPassword,
                 );
-              })
+              }),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text('Login'),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  Get.toNamed(Routes.SIGNUP);
+                },
+                child: const Text("Don't have an account? Sign up"),
+              ),
             ],
           ),
         ),
