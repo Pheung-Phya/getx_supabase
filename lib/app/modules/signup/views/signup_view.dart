@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_supabase/app/modules/widgets/input_field.dart';
-
-import '../../../routes/app_pages.dart';
 import '../controllers/signup_controller.dart';
 
 class SignupView extends GetView<SignupController> {
@@ -10,6 +8,7 @@ class SignupView extends GetView<SignupController> {
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,7 @@ class SignupView extends GetView<SignupController> {
               InputField(
                 hintText: 'Enter Name',
                 label: 'Name',
-                controller: emailController,
+                controller: nameController,
                 icon: Icons.person,
               ),
               const SizedBox(height: 15),
@@ -58,7 +57,10 @@ class SignupView extends GetView<SignupController> {
               }),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  controller.signUp(nameController.text, emailController.text,
+                      passwordController.text);
+                },
                 child: const Text('Sign Up'),
               ),
               const SizedBox(height: 10),

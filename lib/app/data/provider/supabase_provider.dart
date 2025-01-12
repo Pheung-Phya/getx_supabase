@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -8,32 +10,41 @@ class SupabaseProvider {
   SupabaseProvider._privateConstructor();
   final supabase = Supabase.instance.client;
 
-  Future<void> loginWithEmail(
-      {required String name,
-      required String email,
-      required String password}) async {
+  Future<bool> loginWithEmail(
+      {required String email, required String password}) async {
     try {
-      final user = await instance.supabase.auth
-          .signInWithPassword(email: email, password: password);
+      final response = await instance.supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+      if (response.session != null) {
+        return true;
+      } else {
+        throw Exception('Invalid credentials');
+      }
     } catch (e) {
-      Get.snackbar('Login Error', 'Error: ' + e.toString());
+      Get.snackbar("Erorr", 'Erorr ${e.toString()}');
+      return false;
     }
   }
 
-  Future<void> signUpWithEmail(
-      {required String name,
-      required String email,
-      required String password}) async {
+  Future<bool> signUpWithEmail(
+      {required String email,
+      required String password,
+      required String name}) async {
     try {
-      final user = await instance.supabase.auth
+      final response = await instance.supabase.auth
           .signUp(email: email, password: password, data: {
         'name': name,
       });
-      if (user.session != null && !GetUtils.isEmail(email)) {
-        Get.offAllNamed(Routes.HOME);
+      if (response.user != null) {
+        return true;
+      } else {
+        throw Exception('Sign-up failed');
       }
     } catch (e) {
-      Get.snackbar('Login Error', 'Error: ' + e.toString());
+      print('Sign-up error: $e');
+      return false;
     }
   }
 }
