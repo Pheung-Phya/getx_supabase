@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:getx_supabase/app/data/provider/supabase_provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DrawerField extends StatelessWidget {
   const DrawerField({super.key});
@@ -13,14 +12,14 @@ class DrawerField extends StatelessWidget {
           DrawerHeader(child: Image.asset('assets/images/logostar.png')),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Home'),
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
             onTap: () => {},
           ),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.list),
-            title: Text('About Us'),
+            leading: const Icon(Icons.list),
+            title: const Text('About Us'),
             onTap: () => {},
           ),
           const Divider(),
@@ -30,7 +29,7 @@ class DrawerField extends StatelessWidget {
             onPressed: () {
               SupabaseProvider.instance.signOut();
             },
-            child: Text('Logout'),
+            child: const Text('Logout'),
           ),
           const SizedBox(height: 10.0),
         ],
