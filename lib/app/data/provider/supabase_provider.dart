@@ -3,8 +3,6 @@ import 'dart:ffi';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../routes/app_pages.dart';
-
 class SupabaseProvider {
   static SupabaseProvider instance = SupabaseProvider._privateConstructor();
   SupabaseProvider._privateConstructor();
@@ -44,6 +42,15 @@ class SupabaseProvider {
       }
     } catch (e) {
       print('Sign-up error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> getCurrentUser() async {
+    final user = instance.supabase.auth.currentUser;
+    if (user != null) {
+      return true;
+    } else {
       return false;
     }
   }

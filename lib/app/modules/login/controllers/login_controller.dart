@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:getx_supabase/app/data/provider/supabase_provider.dart';
-
 import '../../../routes/app_pages.dart';
 
 class LoginController extends GetxController {
