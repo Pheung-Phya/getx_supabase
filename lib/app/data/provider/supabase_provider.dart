@@ -3,6 +3,8 @@ import 'dart:ffi';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../routes/app_pages.dart';
+
 class SupabaseProvider {
   static SupabaseProvider instance = SupabaseProvider._privateConstructor();
   SupabaseProvider._privateConstructor();
@@ -52,6 +54,16 @@ class SupabaseProvider {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      await instance.supabase.auth.signOut();
+      Get.offAllNamed(Routes.LOGIN);
+    } catch (e) {
+      print('Error signing out: $e');
+      throw Exception('Failed to sign out: $e');
     }
   }
 }
