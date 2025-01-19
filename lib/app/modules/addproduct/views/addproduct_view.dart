@@ -1,158 +1,145 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import '../controllers/addproduct_controller.dart';
 
 class AddproductView extends GetView<AddproductController> {
   AddproductView({super.key});
 
-  List<String> sizes = ['S', 'M', 'X', 'XL', 'XXL'];
-  List<String> color = [
-    'Black',
-    'Red',
-    'Green',
-  ];
+  final List<String> sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+  final List<String> colors = ['Black', 'Red', 'Green'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Addproduct'),
+        title: const Text('Add Product'),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.shopping_cart_outlined,
-              size: 30,
-            ),
-            onPressed: () {},
-          ),
+              onPressed: () {
+                controller.saveProduct;
+                Get.back();
+              },
+              icon: const Icon(Icons.shopping_cart_outlined))
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  height: 200,
-                  width: 200,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: const Color.fromARGB(255, 27, 62, 218)),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.asset('assets/images/logostar.png')),
-                ),
-                space(20),
-                const TextField(
-                  decoration: InputDecoration(
-                      label: Text('Enter Product Name'),
-                      border: OutlineInputBorder()),
-                ),
-                space(15),
-                const TextField(
-                  keyboardType: TextInputType.numberWithOptions(),
-                  decoration: InputDecoration(
-                      prefix: Text('\$'),
-                      label: Text(' Enter Product price'),
-                      border: OutlineInputBorder()),
-                ),
-                space(15),
-                SizedBox(
-                  height: 50,
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(3.5),
-                        width: 70,
+          child: Column(
+            children: [
+              Obx(() {
+                return controller.imageFile.value != null
+                    ? Image.file(controller.imageFile.value!, height: 200)
+                    : Container(
+                        width: 200,
+                        height: 200,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          color: Colors.red,
-                        ),
-                        child: const Text(
-                          ' Sizes',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            itemCount: sizes.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(7.0),
-                                child: MaterialButton(
-                                  color: Colors.blue,
-                                  onPressed: () {},
-                                  child: Text(sizes[index]),
-                                ),
-                              );
-                            }),
-                      ),
-                    ],
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(15)),
+                        child: const Center(child: Text("No Image Selected")));
+              }),
+              space(15),
+              ElevatedButton(
+                onPressed: controller.pickImage,
+                child: const Text("Pick Image"),
+              ),
+              space(15),
+              TextField(
+                controller: controller.nameController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Product Name'),
+              ),
+              space(15),
+              TextField(
+                controller: controller.priceController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.attach_money_sharp),
+                    border: OutlineInputBorder(),
+                    labelText: 'Product Price'),
+              ),
+              space(15),
+              Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(right: 8.0),
+                    child: const Text('Sizes'),
                   ),
-                ),
-                space(15),
-                SizedBox(
-                  height: 50,
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(3.5),
-                        width: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          color: Colors.red,
-                        ),
-                        child: const Text(
-                          'Colors',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.white),
-                        ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: sizes.map((size) {
+                          return Obx(() {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
+                              child: ChoiceChip(
+                                label: Text(size),
+                                selected:
+                                    controller.selectedSizes.contains(size),
+                                onSelected: (selected) {
+                                  if (selected) {
+                                    controller.selectedSizes.add(size);
+                                  } else {
+                                    controller.selectedSizes.remove(size);
+                                  }
+                                },
+                              ),
+                            );
+                          });
+                        }).toList(),
                       ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            itemCount: color.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(7.0),
-                                child: MaterialButton(
-                                  color: Colors.blue,
-                                  onPressed: () {},
-                                  child: Text(color[index]),
-                                ),
-                              );
-                            }),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                space(15),
-                const TextField(
-                  maxLines: 12,
-                  decoration: InputDecoration(
-                      hintText: 'Enter Product decoration',
-                      border: OutlineInputBorder()),
-                ),
-                space(15),
-              ],
-            ),
+                ],
+              ),
+              space(15),
+              Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(right: 8.0),
+                    child: const Text('Colors'),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: colors.map((color) {
+                          return Obx(() {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
+                              child: ChoiceChip(
+                                label: Text(color),
+                                selected:
+                                    controller.selectedColors.contains(color),
+                                onSelected: (selected) {
+                                  if (selected) {
+                                    controller.selectedColors.add(color);
+                                  } else {
+                                    controller.selectedColors.remove(color);
+                                  }
+                                },
+                              ),
+                            );
+                          });
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              space(15),
+              TextField(
+                controller: controller.descriptionController,
+                maxLines: 12,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Product Description'),
+              ),
+            ],
           ),
         ),
       ),
