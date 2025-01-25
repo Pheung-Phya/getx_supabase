@@ -16,11 +16,11 @@ class AddproductView extends GetView<AddproductController> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () {
-                controller.saveProduct;
-                Get.back();
-              },
-              icon: const Icon(Icons.shopping_cart_outlined))
+            onPressed: () {
+              controller.saveProduct();
+            },
+            icon: const Icon(Icons.shopping_cart_outlined),
+          )
         ],
       ),
       body: Padding(
@@ -35,9 +35,11 @@ class AddproductView extends GetView<AddproductController> {
                         width: 200,
                         height: 200,
                         decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(15)),
-                        child: const Center(child: Text("No Image Selected")));
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Center(child: Text("No Image Selected")),
+                      );
               }),
               space(15),
               ElevatedButton(
@@ -48,97 +50,34 @@ class AddproductView extends GetView<AddproductController> {
               TextField(
                 controller: controller.nameController,
                 decoration: const InputDecoration(
-                    border: OutlineInputBorder(), labelText: 'Product Name'),
+                  border: OutlineInputBorder(),
+                  labelText: 'Product Name',
+                ),
               ),
               space(15),
               TextField(
                 controller: controller.priceController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.attach_money_sharp),
-                    border: OutlineInputBorder(),
-                    labelText: 'Product Price'),
+                  prefixIcon: Icon(Icons.attach_money_sharp),
+                  border: OutlineInputBorder(),
+                  labelText: 'Product Price',
+                ),
               ),
               space(15),
-              Row(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 8.0),
-                    child: const Text('Sizes'),
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: sizes.map((size) {
-                          return Obx(() {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: ChoiceChip(
-                                label: Text(size),
-                                selected:
-                                    controller.selectedSizes.contains(size),
-                                onSelected: (selected) {
-                                  if (selected) {
-                                    controller.selectedSizes.add(size);
-                                  } else {
-                                    controller.selectedSizes.remove(size);
-                                  }
-                                },
-                              ),
-                            );
-                          });
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              buildChoiceChips('Sizes', sizes, controller.selectedSizes),
               space(15),
-              Row(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 8.0),
-                    child: const Text('Colors'),
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: colors.map((color) {
-                          return Obx(() {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: ChoiceChip(
-                                label: Text(color),
-                                selected:
-                                    controller.selectedColors.contains(color),
-                                onSelected: (selected) {
-                                  if (selected) {
-                                    controller.selectedColors.add(color);
-                                  } else {
-                                    controller.selectedColors.remove(color);
-                                  }
-                                },
-                              ),
-                            );
-                          });
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              buildChoiceChips('Colors', colors, controller.selectedColors),
               space(15),
               TextField(
                 controller: controller.descriptionController,
                 maxLines: 12,
                 decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Product Description'),
+                  border: OutlineInputBorder(),
+                  labelText: 'Product Description',
+                ),
               ),
+              space(15),
             ],
           ),
         ),
@@ -146,9 +85,44 @@ class AddproductView extends GetView<AddproductController> {
     );
   }
 
-  Widget space(double height) {
-    return SizedBox(
-      height: height,
+  Widget buildChoiceChips(
+      String label, List<String> options, RxList<String> selectedItems) {
+    return Row(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(right: 8.0),
+          child: Text(label),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: options.map((option) {
+                return Obx(() {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ChoiceChip(
+                      label: Text(option),
+                      selected: selectedItems.contains(option),
+                      onSelected: (selected) {
+                        if (selected) {
+                          selectedItems.add(option);
+                        } else {
+                          selectedItems.remove(option);
+                        }
+                      },
+                    ),
+                  );
+                });
+              }).toList(),
+            ),
+          ),
+        ),
+      ],
     );
+  }
+
+  Widget space(double height) {
+    return SizedBox(height: height);
   }
 }

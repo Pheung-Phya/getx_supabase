@@ -2,22 +2,30 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../routes/app_pages.dart';
 
 class SupabaseProvider {
   static SupabaseProvider instance = SupabaseProvider._privateConstructor();
   SupabaseProvider._privateConstructor();
   final supabase = Supabase.instance.client;
+
   Future<String?> uploadImage(File file, String bucket, String path) async {
     try {
       final mimeType = lookupMimeType(file.path) ?? 'application/octet-stream';
       final bytes = await file.readAsBytes();
 
-      await supabase.storage.from(bucket).uploadBinary(
+      final response = await supabase.storage.from(bucket).uploadBinary(
             path,
             bytes,
             fileOptions: FileOptions(contentType: mimeType),
           );
+      if (response.error != null) {
+        Get.snackbar(
+            "Error", "Failed to upload image: ${response.error?.message}");
+        return null;
+      }
       final publicUrl = supabase.storage.from(bucket).getPublicUrl(path);
+      print("Uploaded Image URL: $publicUrl"); // Debugging log
       return publicUrl;
     } catch (e) {
       Get.snackbar("Error", "Image upload failed: $e");
@@ -26,17 +34,15 @@ class SupabaseProvider {
     }
   }
 
-  Future<bool> saveProductToSupabase(Map<String, dynamic> product) async {
+  Future<Map<String, dynamic>?> saveProductToSupabase(
+      Map<String, dynamic> product) async {
     try {
-      final response = await supabase.from('products').insert(product).select();
-      if (response.isEmpty) {
-        throw Exception("Failed to save product. No data returned.");
-      }
-      return true;
+      final response =
+          await supabase.from('products').insert([product]).select().single();
+      return response;
     } catch (e) {
-      Get.snackbar("Error", "Failed to save product to Supabase: $e");
-      print("Failed to save product to Supabase: $e");
-      return false;
+      print('Error saving product: $e');
+      return null;
     }
   }
 
@@ -76,10 +82,18 @@ class SupabaseProvider {
   Future<void> signOut() async {
     try {
       await supabase.auth.signOut();
-      Get.offAllNamed('/login');
+      Get.offAllNamed(Routes.LOGIN);
     } catch (e) {
       print('Error signing out: $e');
       throw Exception('Failed to sign out: $e');
     }
   }
+}
+
+extension on PostgrestList {
+  get error => null;
+}
+
+extension on String {
+  get error => null;
 }
