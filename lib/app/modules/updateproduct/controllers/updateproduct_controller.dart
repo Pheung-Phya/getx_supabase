@@ -39,10 +39,10 @@ class UpdateProductController extends GetxController {
     selectedSizes.assignAll(product.sizes);
     selectedColors.assignAll(product.colors);
 
-    if (product.image != null && product.image!.startsWith('http')) {
+    if (product.image.isNotEmpty && product.image.startsWith('http')) {
       imageUrl.value = product.image;
     } else if (product.image != null) {
-      imageFile.value = File(product.image!);
+      imageFile.value = File(product.image);
     }
   }
 

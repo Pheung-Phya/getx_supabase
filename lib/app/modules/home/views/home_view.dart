@@ -42,9 +42,9 @@ class HomeView extends GetView<HomeController> {
                 child: ListTile(
                   title: Text(product.name),
                   subtitle: Text('Price: \$${product.price}'),
-                  leading: product.image != null
+                  leading: product.image.isNotEmpty
                       ? Image.network(
-                          product.image!,
+                          product.image,
                           width: 50,
                           height: 50,
                           fit: BoxFit.cover,
@@ -67,6 +67,8 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ],
                   ),
+                  onTap: () =>
+                      Get.toNamed(Routes.DETAILPRODUCT, arguments: productData),
                 ),
               );
             },

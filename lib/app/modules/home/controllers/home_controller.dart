@@ -61,27 +61,27 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> updateProduct(Map<String, dynamic> updatedProduct) async {
-    try {
-      final response = await SupabaseProvider.instance.supabase
-          .from('products')
-          .update(updatedProduct)
-          .eq('id', updatedProduct['id']);
-      if (response.error != null) {
-        Get.snackbar(
-            "Error", "Failed to update product: ${response.error?.message}");
-        return;
-      }
-      final index = products
-          .indexWhere((product) => product['id'] == updatedProduct['id']);
-      if (index != -1) {
-        products[index] = updatedProduct;
-      }
-      Get.snackbar("Success", "Product updated successfully.");
-    } catch (e) {
-      Get.snackbar("Error", "An error occurred while updating the product: $e");
-    }
-  }
+  // Future<void> updateProduct(Map<String, dynamic> updatedProduct) async {
+  //   try {
+  //     final response = await SupabaseProvider.instance.supabase
+  //         .from('products')
+  //         .update(updatedProduct)
+  //         .eq('id', updatedProduct['id']);
+  //     if (response.error != null) {
+  //       Get.snackbar(
+  //           "Error", "Failed to update product: ${response.error?.message}");
+  //       return;
+  //     }
+  //     final index = products
+  //         .indexWhere((product) => product['id'] == updatedProduct['id']);
+  //     if (index != -1) {
+  //       products[index] = updatedProduct;
+  //     }
+  //     Get.snackbar("Success", "Product updated successfully.");
+  //   } catch (e) {
+  //     Get.snackbar("Error", "An error occurred while updating the product: $e");
+  //   }
+  // }
 
   void setupRealtimeUpdates() {
     SupabaseProvider.instance.supabase
