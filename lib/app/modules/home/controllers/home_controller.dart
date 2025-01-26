@@ -12,11 +12,12 @@ class HomeController extends GetxController {
     setupRealtimeUpdates();
   }
 
-  // Fetch products from Supabase
   Future<void> fetchProducts() async {
     try {
       final data =
           await SupabaseProvider.instance.supabase.from('products').select();
+      print('data: $data');
+
       products.assignAll(List<Map<String, dynamic>>.from(data));
     } catch (e) {
       Get.snackbar("Error", "An error occurred while fetching products: $e");
@@ -25,15 +26,12 @@ class HomeController extends GetxController {
     }
   }
 
-  // Delete a product from Supabase
   Future<void> deleteProduct(int id) async {
     try {
-      // Find the product to delete
       final product = products.firstWhere((product) => product['id'] == id);
       final imagePath = product['image'];
       print('imagePath: $imagePath');
 
-      // Delete the product from the database
       await SupabaseProvider.instance.supabase
           .from('products')
           .delete()
@@ -48,15 +46,13 @@ class HomeController extends GetxController {
         final filePath = imagePath.replaceFirst(publicUrlPrefix, '').trim();
         print('file path: $filePath');
 
-        // Remove the file from the bucket
         final response = await SupabaseProvider.instance.supabase.storage
             .from(bucket)
-            .remove(['products/1737737015616.jpg']);
+            .remove([filePath]);
         print('response: $response');
         print('response path: ${response.toString()}');
       }
 
-      // Remove the product from the local list
       products.removeWhere((product) => product['id'] == id);
       Get.snackbar("Success", "Product deleted successfully.");
     } catch (e) {
@@ -65,7 +61,6 @@ class HomeController extends GetxController {
     }
   }
 
-  // Update product details in Supabase
   Future<void> updateProduct(Map<String, dynamic> updatedProduct) async {
     try {
       final response = await SupabaseProvider.instance.supabase
@@ -88,14 +83,13 @@ class HomeController extends GetxController {
     }
   }
 
-  // Setup real-time updates for products
   void setupRealtimeUpdates() {
     SupabaseProvider.instance.supabase
         .from('products')
         .stream(primaryKey: ['id']).listen(
       (event) {
         products.assignAll(
-          event.map((e) => e as Map<String, dynamic>).toList(),
+          event.map((e) => e).toList(),
         );
       },
       onError: (error) {

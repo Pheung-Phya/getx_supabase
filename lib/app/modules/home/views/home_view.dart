@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getx_supabase/app/modules/home/controllers/home_controller.dart';
-
+import 'package:flutter/material.dart';
+import '../../../data/model/product.dart';
 import '../../../routes/app_pages.dart';
-import '../../widgets/drawer_field.dart';
+import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -11,7 +10,6 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const DrawerField(),
       appBar: AppBar(
         title: const Text('HomeView'),
         centerTitle: true,
@@ -36,14 +34,17 @@ class HomeView extends GetView<HomeController> {
           return ListView.builder(
             itemCount: controller.products.length,
             itemBuilder: (context, index) {
-              final product = controller.products[index];
+              final productData = controller.products[index];
+              final product =
+                  Product.fromMap(productData); // Convert Map to Product
+
               return Card(
                 child: ListTile(
-                  title: Text(product['name'] ?? 'No name'),
-                  subtitle: Text('Price: \$${product['price']}'),
-                  leading: product['image'] != null
+                  title: Text(product.name),
+                  subtitle: Text('Price: \$${product.price}'),
+                  leading: product.image != null
                       ? Image.network(
-                          product['image'],
+                          product.image!,
                           width: 50,
                           height: 50,
                           fit: BoxFit.cover,
@@ -54,19 +55,18 @@ class HomeView extends GetView<HomeController> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.toNamed(Routes.UPDATEPRODUCT, arguments: product);
+                        },
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () {
-                          controller.deleteProduct(product['id']);
+                          controller.deleteProduct(product.id!);
                         },
                       ),
                     ],
                   ),
-                  onTap: () {
-                    Get.toNamed(Routes.DETAILPRODUCT, arguments: product);
-                  },
                 ),
               );
             },

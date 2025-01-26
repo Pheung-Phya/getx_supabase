@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/detailproduct_controller.dart';
 
 class DetailproductView extends GetView<DetailproductController> {
@@ -46,7 +47,9 @@ class DetailproductView extends GetView<DetailproductController> {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed(Routes.UPDATEPRODUCT, arguments: product);
+                  },
                   child: const Text('Edit Product'),
                 ),
               ],

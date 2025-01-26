@@ -82,10 +82,9 @@ class AddproductController extends GetxController {
         await SupabaseProvider.instance.saveProductToSupabase(product);
     if (response != null && response['id'] != null) {
       final productId = response['id']; // Get the product id from the response
-      product['id'] = productId; // Assign the id to the product
+      product['id'] = productId;
 
-      // Add the new product to HomeController's list
-      Get.find<HomeController>().products.add(product);
+      Get.find<HomeController>().fetchProducts();
       Get.snackbar("Success", "Product saved in Supabase.");
     } else {
       Get.snackbar("Error", "Failed to save product to Supabase.");
